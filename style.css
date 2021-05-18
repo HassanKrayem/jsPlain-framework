@@ -1,0 +1,62 @@
+   body {
+        padding: 0;
+        margin: 0 10px;
+    }
+
+    .good-look {
+        font-size: 14pt;
+        font-weight: bold;
+        font-family: fantasy;
+    }
+
+    #log_container {
+        margin: 10px 0;
+    }
+
+    #card_container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-gap: 10px 2em;
+    }
+
+    #card_container * {
+        align-self: center;
+    }
+
+    .card {
+        display: inline-block;
+        position: relative;
+        width: 320px;
+        border: 1px solid #444;
+        padding: 12px;
+        border-radius: 20px;
+        transition: background-color .4s, box-shadow 0.4s, border-radius 0.4s;
+        cursor: pointer;
+    }
+
+    .card:hover {
+        color: #fff;
+        background-color: #00affa;
+        box-shadow: 0 0 12px #999;
+        border-radius: 8px;
+    }
+
+    .log {
+        display: inline-block;
+        width: fit-content;
+        padding: 5px;
+        border-radius: 10px;
+        transition: background-color .4s, box-shadow 0.4s, border-radius 0.4s;
+        cursor: pointer;        
+        color: #fff;
+        border-radius: 5px;
+        padding: 12px;
+        background-color: #444;
+        margin: 6px 0;
+    }
+
+    .log.success {color: lightgreen;}
+    .log.info {color: skyblue;}
+    .log.warning {color: orange;}
+    .log.danger {color: brown;}
+

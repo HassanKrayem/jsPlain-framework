@@ -1,196 +1,50 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">    
     <script src="./plainJS.js"></script>
 </head>
-
-<style type="text/css">
-    body {
-        padding: 0;
-        margin: 0 10px;
-    }
-
-    .good-look {
-        font-size: 14pt;
-        font-weight: bold;
-        font-family: fantasy;
-    }
-
-    #log_container {
-        margin: 10px 0;
-    }
-
-    #card_container {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-gap: 10px 2em;
-    }
-
-    #card_container * {
-        align-self: center;
-    }
-
-    .card {
-        display: inline-block;
-        position: relative;
-        width: 320px;
-        border: 1px solid #444;
-        padding: 12px;
-        border-radius: 20px;
-        transition: background-color .4s, box-shadow 0.4s, border-radius 0.4s;
-        cursor: pointer;
-    }
-
-    .card:hover {
-        color: #fff;
-        background-color: #00affa;
-        box-shadow: 0 0 12px #999;
-        border-radius: 8px;
-    }
-
-    .log {
-        display: inline-block;
-        width: fit-content;
-        padding: 5px;
-        border-radius: 10px;
-        transition: background-color .4s, box-shadow 0.4s, border-radius 0.4s;
-        cursor: pointer;        
-        color: #fff;
-        border-radius: 5px;
-        padding: 12px;
-        background-color: #444;
-        margin: 6px 0;
-    }
-
-    .log.success {color: lightgreen;}
-    .log.info {color: skyblue;}
-    .log.warning {color: orange;}
-    .log.danger {color: brown;}
-
-
+ 
 </style>
-<body>
+<body id="mybody">
 
-    <div id="card_container"></div>
-    <div id="log_container"></div>
 
+    <template id="todoTemplate">
+        <div>
+            <span>$title</span> -------- <span>$description</span> ------ <input type="checkbox">
+        </div>
+    </template>
+
+   
     <script>
-        let logTemplate = new ViewTemplate('                                                    \
-            <div class="log good-look $type">                                                   \
-                <div style="text-transform: uppercase; color: #fff;">                          \
-                    $type [<span onclick="removeMe(this)">x</span>]                                                                      \
-                </div>                             \
-                $logTitle                              \
-                <br> <small>$logDetails</small>                                                 \
-            </div>                                                                              \
-        ',  _('log_container'))
+
+        let jsonData = [
+            {
+              title: 'Shop',
+              description: 'Buy Some Stuff from supermarket'
+            },
+            {
+              title: 'Download a Movie',
+              description: 'Download a movie from Netflix'
+            },
+            {
+              title: 'Feature for future',
+              description: 'Make some good stuff'
+            }
+        ];
 
 
-        let log1 = logTemplate.compile({
-            logTitle: "Initial Log",
-            logDetails: "Logging for fun",
-            type: ""
-        }).appendToParent()
+        let todos = []
+        let todoTemplate = new ViewTemplate( document.getElementById('todoTemplate'),  document.getElementById('mybody'))
 
-        let log2 = logTemplate.compile({
-            logTitle: "Initial Log",
-            logDetails: "Logging for fun",
-            type: ""
-        }).appendToParent()
 
-        let log3 = logTemplate.compile({
-            logTitle: "Initial Log",
-            logDetails: "Logging for fun",
-            type: ""
-        }).appendToParent()
-
-        let log4 = logTemplate.compile({
-            logTitle: "Updated Child Log",
-            logDetails: "Logging for fun",
-            type: ""
+        jsonData.forEach( e => {
+            todos.push(todoTemplate.compile(e).appendToParent())
         })
-        
 
-        let parent = log2.DOM.parentNode
-
-        
-        parent.replaceChild(log4.DOM, log2.DOM)
-        
-
-
-
-        let cardTemplate = new ViewTemplate('                                                   \
-            <div class="card">                                                                  \
-                Name: $name <br> Major: $major                                                  \
-            </div>                                                                              \
-            ',  _('card_container'))
-
-
-
-
-        cardTemplate.DOMSharedProps.onclick = function (e, templateData, DOM) {
-            logTemplate.compile({
-                logTitle: DOM.getAttribute("data-live-life"),
-                logDetails: JSON.stringify(templateData),
-                type: templateData.logType
-            }).appendToParent()
-        }
-
-        let card1 = cardTemplate.compile({
-            name: "Hisham",
-            major: "Full Stack Developer",
-            logType: 'success'
-        }).appendToParent()
-
-
-        let card2 = cardTemplate.compile({
-            name: "Hassan",
-            major: "Develoepr",
-            logType: 'success'
-        }).appendToParent()
-
-        let card3 = cardTemplate.compile({
-            name: "John",
-            major: "DB Manager",
-            logType: 'warning'
-        }).appendToParent()
-
-        let card4 = cardTemplate.compile({
-            name: "Willam",
-            major: "Cloud Art",
-            logType: 'info'
-        }).appendToParent()
-
-        let card5 = cardTemplate.compile({
-            name: "Ruya",
-            major: "Staff",
-            logType: 'info'
-        }).appendToParent()
-
-        let card6 = cardTemplate.compile({
-            name: "Vilaea",
-            major: "Accounter",
-            logType: 'danger'
-        }).appendToParent()
-
-
-        card1.DOM.setAttribute("data-live-life", 'to a better end')
-        card2.DOM.setAttribute("data-live-life", 'to the infinite potential ')
-        card3.DOM.setAttribute("data-live-life", 'to let it rain happenes')
-        card4.DOM.setAttribute("data-live-life", 'Tip 1')
-        card5.DOM.setAttribute("data-live-life", 'Tip 2')
-        card6.DOM.setAttribute("data-live-life", 'Tip 3')
-
-
-        function removeMe(ele) {
-
-            ele.parentNode.parentNode.removeChild(ele.parentNode)
-        }
-
-
-
-        
+        todos[1].update({title: "HASSAN"})
+        todos[1].update({description: "New description"})
+    
     </script>
 
 </body>

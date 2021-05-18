@@ -49,7 +49,11 @@ class ViewTemplate {
     parent
 
     constructor(template, parent) {
-        this.template = template.trim()
+    	if (typeof template === 'string')
+    		this.template = template.trim()
+    	else 
+    	 	this.template = template.innerHTML.trim()
+        
         this.parent = parent
     }
 
@@ -66,11 +70,10 @@ class ViewTemplate {
     signDOM(DOM, templateData) {
         DOM.setAttribute(this.ID_ATTRIBUTE, ViewTemplate.ViewsCounter += 1)
         this.assignSharedProps(DOM, templateData)
-        let final = this.controllers(DOM)
+        let final = this.createCtx(DOM, templateData)
         this.childrenList.push(final)
         return final
     }
-
 
     assignSharedProps(DOM, templateData) {
         let h = this.DOMSharedProps
@@ -81,16 +84,24 @@ class ViewTemplate {
         }
     }
 
-    update(params) {
+    update (ctx, params) {
+    	ctx.templateData = {
+    		...ctx.templateData,
+    		...params
+    	}
 
+    	let cv = ViewCompiler.compile(ctx.templateData, this.template)
+        let doc = ViewTemplate.htmlParser.parseFromString(cv, 'text/html');
+        ctx.DOM.innerHTML = doc.body.innerHTML
     }
 
-    controllers(DOM) {
-        let c = {
+    createCtx(DOM, templateData) {
+        let ctx = {
             DOM: DOM,
-            appendToParent: () => {this.parent.appendChild(DOM); return c;}
-            update: (params) => {this.update(params)}
+            templateData: templateData,
+            appendToParent: () => {this.parent.appendChild(DOM); return ctx;},
+            update: (params) => {this.update(ctx, params)}
         }; 
-        return c
+        return ctx
     }
 }

@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="./plainJS.js"></script>
+</head>
+ 
+</style>
+<body>
+
+    <div id="card_container"></div>
+    <div id="log_container"></div>
+
+    <!-- Card Template  -->
+    <template id="cardTemplate">
+        <div class="card">
+            Name: $name <br> Major: $major
+        </div>
+    </template>
+
+    <!-- Log Template -->
+    <template id="logTemplate">
+        <div class="log good-look $type">
+            <div style="text-transform: uppercase; color: #fff;">
+                $type [<span onclick="removeMe(this)">x</span>]
+            </div>
+            $logTitle
+            <br> <small>$logDetails</small>
+        </div>
+    </template>
+
+   
+    <script>
+        let logTemplate = new ViewTemplate(_('logTemplate'),  _('log_container'))
+        
+        let cardTemplate = new ViewTemplate(_('cardTemplate'),  _('card_container'))
+        cardTemplate.DOMSharedProps.onclick = function (event, templateData, DOM) {
+            logTemplate.compile({
+                logTitle: DOM.getAttribute("data-live-life"),
+                logDetails: JSON.stringify(templateData),
+                type: templateData.logType
+            }).appendToParent()
+        }
+
+
+        let log1 = logTemplate.compile({
+            logTitle: "Initial Log",
+            logDetails: "Logging for fun",
+            type: ""
+        }).appendToParent()
+
+        let log2 = logTemplate.compile({
+            logTitle: "Initial Log",
+            logDetails: "Logging for fun",
+            type: ""
+        }).appendToParent()
+
+        let log3 = logTemplate.compile({
+            logTitle: "Initial Log",
+            logDetails: "Logging for fun",
+            type: ""
+        }).appendToParent()
+
+        let log4 = logTemplate.compile({
+            logTitle: "Updated Child Log",
+            logDetails: "Logging for fun",
+            type: ""
+        })
+        
+
+        let parent = log2.DOM.parentNode
+
+        
+        parent.replaceChild(log4.DOM, log2.DOM)
+        
+
+
+        
+
+        let card1 = cardTemplate.compile({
+            name: "Hisham",
+            major: "Full Stack Developer",
+            logType: 'success'
+        }).appendToParent()
+
+
+        let card2 = cardTemplate.compile({
+            name: "Hassan",
+            major: "Develoepr",
+            logType: 'success'
+        }).appendToParent()
+
+        let card3 = cardTemplate.compile({
+            name: "John",
+            major: "DB Manager",
+            logType: 'warning'
+        }).appendToParent()
+
+        let card4 = cardTemplate.compile({
+            name: "Willam",
+            major: "Cloud Art",
+            logType: 'info'
+        }).appendToParent()
+
+        let card5 = cardTemplate.compile({
+            name: "Ruya",
+            major: "Staff",
+            logType: 'info'
+        }).appendToParent()
+
+        let card6 = cardTemplate.compile({
+            name: "Vilaea",
+            major: "Accounter",
+            logType: 'danger'
+        }).appendToParent()
+
+
+        card1.DOM.setAttribute("data-live-life", 'to a better end')
+        card2.DOM.setAttribute("data-live-life", 'to the infinite potential ')
+        card3.DOM.setAttribute("data-live-life", 'to let it rain happenes')
+        card4.DOM.setAttribute("data-live-life", 'Tip 1')
+        card5.DOM.setAttribute("data-live-life", 'Tip 2')
+        card6.DOM.setAttribute("data-live-life", 'Tip 3')
+
+
+        function removeMe(ele) {
+
+            ele.parentNode.parentNode.removeChild(ele.parentNode)
+        }
+
+
+
+        
+    </script>
+
+</body>
+</html>
