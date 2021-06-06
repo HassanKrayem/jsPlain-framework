@@ -2,6 +2,18 @@ function _(id) {
     return document.getElementById(id)
 }
 
+function _c(t) {
+    return document.createElement(t)
+}
+
+function _cs(css) {
+    let style = document.createElement('style');
+    style.type = 'text/css';
+    style.setAttribute('id', 'uib')
+    style.innerHTML = css;
+    document.getElementsByTagName('head')[0].appendChild(style);
+}
+
 class ViewLocalStorage {
     static save(key, value, toJSON = false) {
         localStorage.setItem(key, (toJSON)? JSON.stringify(value) : value)
@@ -39,21 +51,24 @@ class ViewUtil {
     }
 }
 
+
 class ViewTemplate {
     static ViewsCounter = 0
     ID_ATTRIBUTE = "data-pjs"
     static htmlParser = new DOMParser()
     childrenList = []
-    DOMSharedProps = {}
+    DOMSharedAttrs = {}
+    DOMSharedEvents = {}
     template
     parent
+    DOMS = []
 
     constructor(template, parent) {
     	if (typeof template === 'string')
     		this.template = template.trim()
-    	else 
+    	else
     	 	this.template = template.innerHTML.trim()
-        
+
         this.parent = parent
     }
 
@@ -69,18 +84,26 @@ class ViewTemplate {
 
     signDOM(DOM, templateData) {
         DOM.setAttribute(this.ID_ATTRIBUTE, ViewTemplate.ViewsCounter += 1)
-        this.assignSharedProps(DOM, templateData)
+        this.assignSharedEvents(DOM, templateData)
+        this.assignSharedAttrs(DOM, templateData)
         let final = this.createCtx(DOM, templateData)
         this.childrenList.push(final)
         return final
     }
 
-    assignSharedProps(DOM, templateData) {
-        let h = this.DOMSharedProps
+    assignSharedEvents(DOM, templateData) {
+        let h = this.DOMSharedEvents
         for (let x in h) {
             DOM[x] = (e) => {
                 h[x](e, templateData, DOM)
             }
+        }
+    }
+
+    assignSharedAttrs(DOM, templateData) {
+        let h = this.DOMSharedAttrs
+        for (let x in h) {
+            DOM.setAttribute(x, h[x])
         }
     }
 
@@ -96,12 +119,17 @@ class ViewTemplate {
     }
 
     createCtx(DOM, templateData) {
+        this.DOMS.push(DOM)
         let ctx = {
             DOM: DOM,
             templateData: templateData,
             appendToParent: () => {this.parent.appendChild(DOM); return ctx;},
             update: (params) => {this.update(ctx, params)}
-        }; 
+        };
         return ctx
+    }
+
+    getDOMS () {
+        return this.DOMS;
     }
 }

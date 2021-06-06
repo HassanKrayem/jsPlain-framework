@@ -1,51 +1,98 @@
 <!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">    
-    <script src="./plainJS.js"></script>
+    <meta charset="UTF-8">
+    <script src="./plainJS.js"></script>    
+    <link type="text/css" rel="stylesheet" href="./style.css">
 </head>
- 
+
+<style>
+    * {
+        font-family: Consolas;
+        font-size: 12px;
+    }
+
+    html, body {
+        padding: 0;
+        margin: 0;
+
+    }
+
 </style>
-<body id="mybody">
+<body>
 
+<template id="todoTemplate">
+    <div>
+        <span>$title</span> -------- <span>$description</span> ------ <input type="checkbox">
+    </div>
+</template>
 
-    <template id="todoTemplate">
-        <div>
-            <span>$title</span> -------- <span>$description</span> ------ <input type="checkbox">
+ <!-- Log Template -->
+<template id="logTemplate">
+    <div class="log good-look $type">
+        <div style="text-transform: uppercase; color: #fff;">
+            $type [<span onclick="removeMe(this)">x</span>]
         </div>
-    </template>
+        $logTitle
+        <br> <small>$logDetails</small>
+    </div>
+</template>
 
-   
-    <script>
-
-        let jsonData = [
-            {
-              title: 'Shop',
-              description: 'Buy Some Stuff from supermarket'
-            },
-            {
-              title: 'Download a Movie',
-              description: 'Download a movie from Netflix'
-            },
-            {
-              title: 'Feature for future',
-              description: 'Make some good stuff'
-            }
-        ];
+<div id="todos_container"></div>
+<div id="log_container"></div>
 
 
-        let todos = []
-        let todoTemplate = new ViewTemplate( document.getElementById('todoTemplate'),  document.getElementById('mybody'))
+<script>
+ 
+    let jsonData = [
+        {
+            title: 'Shop',
+            description: 'Buy Some Stuff from supermarket',
+            logType: 'info'
+        },
+        {
+            title: 'Download a Movie',
+            description: 'Download a movie from Netflix',
+            logType: 'danger'
+        },
+        {
+            title: 'Feature for future',
+            description: 'Make some good stuff',
+            logType: 'warning'
+        }
+    ];
 
 
-        jsonData.forEach( e => {
-            todos.push(todoTemplate.compile(e).appendToParent())
-        })
-
-        todos[1].update({title: "HASSAN"})
-        todos[1].update({description: "New description"})
     
-    </script>
+    let logTemplate = new ViewTemplate(_('logTemplate'),  _('log_container'))
+
+    let todoTemplate = new ViewTemplate(document.getElementById('todoTemplate'), document.getElementById('todos_container'))
+    todoTemplate.DOMSharedEvents.ondragstart = function (e, templateData, DOM) {}
+    todoTemplate.DOMSharedAttrs.draggable = 'true'
+    todoTemplate.DOMSharedEvents.onclick = function (event, templateData, DOM) {
+            logTemplate.compile({
+                logTitle: DOM.getAttribute("data-live-life"),
+                logDetails: JSON.stringify(templateData),
+                type: templateData.logType
+            }).appendToParent()
+        }
+
+
+    let a = 1
+    let todos = []
+    jsonData.forEach( e => {
+        let d = todoTemplate.compile(e).appendToParent()
+        d.DOM.id = 'd-' + a++        
+        todos.push(d)
+        d.DOM.setAttribute('data-live-life', 'hassan ' + a)
+        // console.log(d.DOM.style.cssText)
+    })
+
+    todos[1].update({title: "HASSAN"})
+    todos[1].update({description: "New description"})
+
+
+</script>
 
 </body>
 </html>
